@@ -1,6 +1,10 @@
 pipeline {
     agent any
     // Add a tool configuration here...
+    tools {
+      maven 'Maven-3.8.4'
+    }
+    
     stages {
         stage('Source') {
             steps {
@@ -15,7 +19,7 @@ pipeline {
                 dir("${env.WORKSPACE}/Ch05/05_04-challenge-create-artifacts-and-reports"){
                     echo "Cleaning the workspace..."
                     // Uncomment the following line after Maven is configured as a global tool
-                    // sh 'mvn clean'
+                    sh 'mvn clean'
                 }
             }
         }
@@ -24,7 +28,7 @@ pipeline {
                 dir("${env.WORKSPACE}/Ch05/05_04-challenge-create-artifacts-and-reports"){
                     echo "Running tests..."
                     // Uncomment the following line after Maven is configured as a global tool
-                    // sh 'mvn test'
+                    sh 'mvn test'
                 }
             }
         }
@@ -33,7 +37,7 @@ pipeline {
                 dir("${env.WORKSPACE}/Ch05/05_04-challenge-create-artifacts-and-reports"){
                     echo "Creating the JAR file..."
                     // Uncomment the following line after Maven is configured as a global tool
-                    // sh 'mvn package -DskipTests'
+                    sh 'mvn package -DskipTests'
                 }
             }
         }
@@ -42,9 +46,20 @@ pipeline {
         always {
             echo "Collecting jUnit test results..."
             // Add jUnit report collection here...
+            archiveArtifacts allowEmptyArchive: true,
+                artifacts: '**/TEST-com.learningjenkins.AppTest.xml',
+                fingerprint: true,
+                followSymlinks: false,
+                onlyIfSuccessful: true
 
             echo "Archiving the JAR file..."
             // Add artifact archiving here...
+            archiveArtifacts allowEmptyArchive: true,
+                artifacts: '**/hello-1.0-SNAPSHOT.jar',
+                fingerprint: true,
+                followSymlinks: false,
+                onlyIfSuccessful: true
+            
         }
     }
 }
