@@ -46,20 +46,12 @@ pipeline {
         always {
             echo "Collecting jUnit test results..."
             // Add jUnit report collection here...
-            archiveArtifacts allowEmptyArchive: true,
-                artifacts: '**/TEST-com.learningjenkins.AppTest.xml',
-                fingerprint: true,
-                followSymlinks: false,
-                onlyIfSuccessful: true
+            
+            junit allowEmptyResults: true, testResults: '**/TEST-com.learningjenkins.AppTest.xml'
 
             echo "Archiving the JAR file..."
             // Add artifact archiving here...
-            archiveArtifacts allowEmptyArchive: true,
-                artifacts: '**/hello-1.0-SNAPSHOT.jar',
-                fingerprint: true,
-                followSymlinks: false,
-                onlyIfSuccessful: true
-            
+            archiveArtifacts allowEmptyArchive: true, artifacts: '**/hello-1.0-SNAPSHOT.jar', fingerprint: true, followSymlinks: false, onlyIfSuccessful: true
         }
     }
 }
